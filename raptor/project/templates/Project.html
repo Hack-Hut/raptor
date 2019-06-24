@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<h1><a href="../../"><img src="{% static "raptor.png" %}" alt="raptor" style="width:120px;height:120px;"></a> <u>Project Overview</u></h1>
+<p>A valid Project is a delivery that has been given a "HCSEC-some-number" and is being built by the BEP team.</p>
+<small><sup><p/><i>**Definitions** S=Successful build attempts, F=Failed build attempts, T=Total build attempts </i></sup></small>
+<table class="table table-striped">
+      <tr>
+        <th>Project</th>
+          <th>Huawei Name</th>
+          <th>Total builds (S/F/T)</th>
+          <th>Percentage Completed</th>
+          <th>Project Active</th>
+          <th>Day's Since Project Started</th>
+          <th>Project Page</th>
+          <th>Modify Project</th>
+      </tr>
+{% for instance in object_list %}
+      <tr>
+        <td>{{ instance.hcsec_name }}</td>
+        <td>{{ instance.huawei_name }}</td>
+        <td>{{ instance.build_attempts_successful }} / {{ instance.build_attempts_failed }} / {{ instance.number_of_builds }}</td>
+          <td>%{{ instance.percentage }}</td>
+          <td>{{ instance.project_active }}</td>
+          <td>{{ instance.project_active_length }}</td>
+        <!--<td>{{ instance.hcsec_name }}</td>-->
+          <td>
+            <a href="{{ instance.hcsec_name }}"><input type="button" class="" value="View"></a>
+          </td>
+         <td>
+              <a href="{{ instance.hcsec_name }}/ModifyProject"><input type="button" class="" value="Modify"></a>
+          </td>
+      </tr>
+{% endfor %}
+</table>
+<h2>Create a new project <p><a href="CreateNew">http://www.raptor.hcsec.co.uk/Project/CreateNew</a></p></h2>
+{% endblock %}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @import 'https://fonts.googleapis.com/css?family=Open+Sans';
+
+        * {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.75em;
+            font-size: 16px;
+            background-color: #222;
+            color: #aaa;
+        }
+
+        .aligncenter {
+            text-align: center;
+        }
+
+        .simple-container {
+            max-width: 675px;
+            margin: 0 auto;
+            padding-top: 70px;
+            padding-bottom: 20px;
+        }
+
+        .simple-print {
+            fill: white;
+            stroke: white;
+        }
+        .simple-print svg {
+            height: 100%;
+        }
+
+        .simple-close {
+            color: white;
+            border-color: white;
+        }
+
+        .simple-ext-info {
+            border-top: 1px solid #aaa;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 30px;
+            line-height: 34px;
+        }
+
+        h2 {
+            font-size: 20px;
+            line-height: 25px;
+        }
+
+        h3 {
+            font-size: 16px;
+            line-height: 27px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #D8D8D8;
+            border-top: 1px solid #D8D8D8;
+        }
+
+        hr {
+            height: 1px;
+            background-color: #d8d8d8;
+            border: none;
+            width: 100%;
+            margin: 0px;
+        }
+
+        a[href] {
+            color: #1e8ad6;
+        }
+
+        a[href]:hover {
+            color: #3ba0e6;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        li {
+            line-height: 1.5em;
+        }
+
+        aside,
+        [class *= "sidebar"],
+        [id *= "sidebar"] {
+            max-width: 90%;
+            margin: 0 auto;
+            border: 1px solid lightgrey;
+            padding: 5px 15px;
+        }
+
+        @media (min-width: 1921px) {
+            body {
+                font-size: 18px;
+            }
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        div.layout {
+            text-align: center;
+        }
+
+        div.mydiv {width: 200px; margin: 0 auto}
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #191919;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #002b4f;
+    }
+
+    </style>
+    <meta charset="UTF-8">
+    <title>Raptor</title>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static "raptor.png" %}">
+
+</head>
+<body>
+{% load static %}
+<div class="container">
+    <h1><img src="{% static "raptor.png" %}" alt="raptor" style="width:120px;height:120px;"> <u>Raptor</u></h1>
+    <h3>Welcome to the <font color="white"><i><b>Raptor</b></i></font> server's web-interface that can be used to monitors live builds and view / download results such as Build Monitor and Semmel. Raptor has several components, raptor-cli, raptor-webserver, raptor-backend, raptor-notification-system and the raptor-rest-api.</h3>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+      </tr>
+      <tr>
+        <td>Active BEP Projects:</td>
+        <td><a href="/HCSEC-1120">HCSEC-1120</a>, <a href="http://www.raptor.hcsec.co.uk/HCSEC-1119">HCSEC-1119</a></td>
+      </tr>
+      <tr>
+        <td>Projects:</td>
+          <td><a href="/Projects">http://www.raptor.hcsec.co.uk/Projects</a></td>
+      </tr>
+      <tr>
+        <td>Documentation:</td>
+        <td><a href="/Documentation">http://www.raptor.hcsec.co.uk/Documentation</a></td>
+      </tr>
+      <tr>
+        <td>FAQ:</td>
+        <td><a href="/FAQ">http://www.raptor.hcsec.co.uk/FAQ</a></td>
+      </tr>
+      <tr>
+        <td>Login:</td>
+        <td><a href="/Admin">http://www.raptor.hcsec.co.uk/admin</a></td>
+      </tr>
+      <tr>
+        <td>Build Results:</td>
+        <td><a href="http://github.com/me/raptor.git">http://github.com/me/raptor.git</a></td>
+      </tr>
+    </table>
+    <h3><i>HCSEC</i></h3>
+</div>
+
+</body>
+
+
+
+</html>

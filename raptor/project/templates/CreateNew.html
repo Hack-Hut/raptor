@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    {% load static %}
+    <h1><a href="../../"><img src="{% static "raptor.png" %}" alt="raptor" style="width:120px;height:120px;"></a> <u>Create New Project</u></h1>
+
+    <form action='CreateNew' method='POST'>{% csrf_token %}
+        <table border="1", align="center">
+            {{ form.as_table }}
+        </table>
+        <div style="text-align: center;">
+             <input type='submit' value='Save' style="text-align: center;"/>
+        </div>
+    </form>
+    <p></p>
+
+    <p style="text-align: center;">
+        <a href="../Projects">http://www.raptor.hcsec.co.uk/Projects/</a>
+    </p>
+</div>
+
+
+
+
+{% endblock %}
