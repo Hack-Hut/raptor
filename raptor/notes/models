@@ -1,0 +1,27 @@
+IF IT'S NOT IN THIS LIST, DELETE IT AND ADD IT LATER
+
+Project
+Huawei name (PK)
+
+Build
+ID (PK)
+project (FK)
+Current_stage
+i_completed
+b_completed
+c_completed
+s_completed
+state
+M1 ip
+M2 ip
+
+Results
+Initial_result_location (shared between machines)
+Proxy_list_1
+Proxy_list_2
+BM_result_location
+Semmel_result_location
+
+
+
+

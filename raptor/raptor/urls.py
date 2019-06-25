@@ -46,4 +46,10 @@ urlpatterns = [
     path('FAQ/', admin.site.urls),
     path('Previous-Results/', admin.site.urls),
     path('Git/', admin.site.urls),
+    path("api/<pk>", include("project.api.urls")),
+    path("api/<int:pk>", include("project.api.urls")),
+    path("api/<str:pk>", include("project.api.urls")),
+    path("api/", include("project.api.urls")),
+    path("api/project/", include("project.api.urls")),
+    path("api/project", include("project.api.urls"))
 ]

@@ -1,0 +1,56 @@
+Initial
+    * Register parent
+        /API/project/Build/Register?id=1&state=waiting&stage=i&machine=1
+
+    * Register child
+        /API/project/Build/Register?id=1&state=waiting&stage=i&machine=2
+
+    * Start Build
+        /API/project/Build/Start?id=1&state=compiling&stage=i&machine=1
+
+    * Finish Build
+        /API/project/Build/Finish?id=1&state=sleeping&stage=i&machine=1
+
+    * Ask for result dir
+        /API/project/Build/Ask?id=1&state=waiting&stage=i&machine=1
+
+    * Uploading Started
+        /API/project/Build/Uploading?id=1&state=waiting&stage=i&machine=1
+
+    * Uploading Finished
+        /API/project/Build/Uploading?id=1&state=Free&stage=i&machine=1
+
+Build-Mon
+    * Register parent
+    * Register child
+    * Get Proxy list
+        /API/project/Build/GetResults?id=1&machine=1&type=proxy
+    * Get plugin list
+        /API/project/Build/GetResults?id=1&machine=1&type=plugin
+    * Check if things are being proxied
+        /API/project/Build/VerifyProxy?id=1&machine=1
+    * Finish Build
+
+
+List of commands
+    Register machine to build
+    Start build
+    Finish build
+    Ask for result storage location
+    Get results
+    Ask if things are being proxied
+
+Endpoints
+    /API/project/Build/Register
+    /API/project/Build/Start
+    /API/project/Build/Finish
+    /API/project/Build/Upload
+    /API/project/Build/Download
+    /API/project/Build/Verify
+    /API/project/Build/State
+
+Stages
+    Free
+    Comping
+    Busy (uploading/downloading results)
+    Waiting (Waiting for user input)

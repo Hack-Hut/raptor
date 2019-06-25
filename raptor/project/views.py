@@ -23,11 +23,6 @@ def project_modify_view(request, project_id):
 def project_view(request):
     queryset = Project.objects.all() # list of objects
 
-    for x in range(len(queryset)):
-        if queryset[x].number_of_builds == 0:
-            queryset[x].percentage = 0.00
-        else:
-            queryset[x].percentage = round((queryset[x].build_attempts_successful / queryset[x].number_of_builds) * 100, 2)
     context = {
         "object_list": queryset
     }

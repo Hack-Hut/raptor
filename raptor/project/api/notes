@@ -1,0 +1,11 @@
+create new models
+delete current db
+restart server
+fix issues from model change
+makemigrations project
+pip3 install djangorestframework
+add rest_framework to the install_apps
+migrate
+create api sub modules
+add init
+add results, build and project to the admin app
