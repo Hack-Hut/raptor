@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+<style>
+    .center {
+      margin: auto;
+      width: 95%;
+      border: 3px solid #152f59;
+      padding: 10px;
+    }
+
+    pre, code {
+      font-family: monospace, monospace;
+    }
+    pre {
+      overflow: auto;
+    }
+
+    pre > code {
+      display: block;
+      padding: 1rem;
+      word-wrap: normal;
+    }
+
+</style>
+
+<h1><a href="../../"><img src="{% static "raptor.png" %}" alt="raptor" style="width:120px;height:120px;"></a> <u>Single Linux Build Walkthrough</u></h1>
+<h2>Steps</h2>
+<div class="center">
+    <ul>
+        <li>Installing Raptor-Cli</li>
+        <li>Setup Build</li>
+        <li>Snapshot</li>
+        <li>Compiling Initial Build</li>
+        <li>Compiling Build-Monitor Build</li>
+        <li>Compiling Semmel Build</li>
+        <li>Compiling Completeness Build (BEP only)</li>
+    </ul>
+</div>
+
+<h2>Installing Raptor-cli</h2>
+<div class="center">
+    <p>Raptor-Cli is just one of the many internal tools bundled together inside the <i>"Bep-Bundle"</i>. You can download the latest version at <a href="github" title="github">github</a> or from the copy hosted raptor server at <a href="raptor"> raptor server</a>. Bep-Bundle also contains other debuging useful tools that you can read more about <a href="asdfas">here.</a> </p>
+    <p>Before installing anything <u>make sure that you have enough disk space for the source code (30Gb) and enough storage space for the results (300Gb+).</u></p>
+    <p>Once you have got a local copy on the linux VM, you will need to install it.</p>
+    <pre>
+      <code>
+        $ echo "mount additional drive"
+        $ wget { ip }
+        $ unzip Bep-Bundle-master.zip
+        $ cd Bep-Bundle-master
+        $ chmod +x install.sh
+        $ sh install.sh
+      </code>
+    </pre>
+    <hr>
+    <h4><u>What is happening behind the scenes?</u></h4>
+    <p>Everything should be installed at this point. Bep-Bundle will first install all the tools. Then it will extract the Python Virtual environment for the raptor-cli. Next a tool called Clean-Machine will be run. Clean-Machine is just a program that does minimal adjustments to build machine. For example it will set up licence server environment variables, edit /etc/hosts to contain Siss, remove name Huawei name resolution from /etc/resolv etc..</p>
+    <p>Next the Bep-Bundle needs to know where to save results locally. These results could be up 500Gb in size so make sure you've added an extra disk space.</p>
+    <p>After that Raptor-Cli will establish a connection to the Raptor-Server.</p>
+</div>
+
+<h2>Setup Build</h2>
+<div class="center">
+    <p>Follow the document right up to the point where you have to perform the compilation step, <u>but do not run it.</u></p>
+    <p><i>( Note that just like semmel, if their are multiple build scripts that have to be run. You will have to create your own build script that merges them all together, then run that instead of the provided entry point.)</i></p>
+</div>
+
+<h2>Snapshot VM</h2>
+<div class="center">
+    <p>Snapshot the VM, the naming convention should be something along the lines of "Prepared-Virgin-VM". Failing to do this step is annoying so I gave it an entire section.</p>
+</div>
+
+<h2>Compiling Initial Build</h2>
+<div class="center">
+    <p>There are two way's to do this based of who you're. So just read the relevant section.</p>
+    <h4><u>Not part of the BEP team?</u></h4>
+    <p>If you're just doing a one of build then I've cut out some of steps to make it a bit more convenient. Navigate to the location of the build script.</p>
+    <p>Then instead of running the build script you run the following</p>
+    <pre>
+      <code>
+          $ raptor-cli -id temp:i `which sh` build.sh additional-build-arguments > results/build.log
+      </code>
+    </pre>
+    <p>The "-id temp:i" flag indicates that the build should not be attached to project. The Raptor server (not hosted on the build machine) has a web interface that manages projects for the BEP team. Since you don't care about this feature we can skip the additional arguments. The ":i" part indicates the build is the initial build.</p>
+    <p>The `which sh` part will just explicitly tell the Raptor-cli what to execute</p>
+    <p>Confirming that the build has compiled successfully will then run <u>Auditme.py</u>, this tool reads the auditd.log file. The log fle can be several Gb's in length so be patient. Auditme.py will generate a list of binaries to proxy for Build-Monitor and also choose the Plugins associated with the binaries.</p>
+    <hr>
+    <h4><u>Part of the BEP team?</u></h4>
+    <p>Instead of running the build script you run the following, but replacing "HCSEC-1120" with the current project and "1" with the id of the build. You can find the ID on the Raptor web sever.</p>
+    <p><i></i></p>
+    <pre>
+      <code>
+          $ raptor-cli -id HCSEC-1120:1:i `which sh` build.sh additional-build-arguments > results/build.log
+      </code>
+    </pre>
+    <hr>
+    <h4><u>What is happening behind the scenes?</u></h4>
+    <p>First the Raptor-cli will connect to the server and mark the virtual machine in the "Compiling state". This was configured in the initial install script. </p>
+    <p>After that the <u>Auditd</u> service will be initiated, Raptor will then test to make sure that everything is logging correctly by executing some commands and checking the log file./p>
+    <p>If everything was successful Raptor will then run <u>null-catcher</u> this creates a backup of /dev/null and replace the standard /dev/null with a text file. This text file will then be read and cleaned constantly throughout the build for stuff sent to /dev/null. I find this a great debugging tool.</p>
+    <p>After that a tool called <u>Bep-Step</u> will be executed. Bep-Step will just call fork() the child will then execute the command with it's arguments, while the parent follows the process tree by reading <i>/proc/</i> any command that contains "Python", "bash", "Sh" etc will be logged. This includes its command line arguments, current working directory, environment variables and the processes open file location (often contain hidden log files, also great for debugging)</p>
+    <p>The following only happens if the build was successful.</p>
+    <p>The Build VM is marked in the "Processing state"</p>
+    <p><u>Auditdme.py</u> is run. This tool will then read the Auditd.log, finding unique binaries that were executed. You will be given the option to proxy every unique binary (this is not in the Auditme.py black list). You can skip this step if you would prefer to create the Build-Monitor configuration files manually. Not by skipping this step you will also miss out on "MonitorHashList.json", this file contains all versions and hashes of binaries the proxied.</p>
+    <p>The results are compressed and sent to the server for storage.</p>
+    <p>Finally the Build VM is marked in the "Free sate" and the Project page is update on the Raptor web server.</p>
+
+    <p></p>
+    <p></p>
+    <hr>
+    <h4><u>Log file locations</u></h4>
+    <ul>
+        <li>results/auditd.log</li>
+        <li>results/null-catcher.log</li>
+        <li>results/bep-step.log</li>
+        <li>results/BinaryToProxy.toml</li>
+        <li>results/PluginConfig.toml</li>
+        <li>results/MonitorHashList.json</li>
+    </ul>
+</div>
+
+<h2>Compiling Build-Monitor Build</h2>
+<div class="center">
+    <p>Raptor-Cli is just one of the many internal tools bundled together inside the <i>"Bep-Bundle"</i>. You can download the latest version at <a href="github" title="github">github</a> or from the copy hosted raptor server at <a href="raptor"> raptor server</a>. Bep-Bundle also contains other debuging useful tools that you can read more about <a href="asdfas">here.</a> </p>
+    <p>Before installing anything <u>make sure that you have enough disk space for the source code (30Gb) and enough storage space for the results (300Gb+).</u></p>
+    <p>Once you have got a local copy on the linux VM, you will need to install it.</p>
+    <pre>
+      <code>
+        $ echo "mount additional drive"
+        $ wget { ip }
+        $ unzip Bep-Bundle-master.zip
+        $ cd Bep-Bundle-master
+        $ chmod +x install.sh
+        $ sh install.sh
+      </code>
+    </pre>
+    <hr>
+    <h4><u>What is happening behind the scenes?</u></h4>
+    <p>Everything should be installed at this point. Bep-Bundle will first install all the tools. Then it will extract the Python Virtual environment for the raptor-cli. Next a tool called Clean-Machine will be run. Clean-Machine is just a program that does minimal adjustments to build machine. For example it will set up licence server environment variables, edit /etc/hosts to contain Siss, remove name Huawei name resolution from /etc/resolv etc..</p>
+    <p>Next the Bep-Bundle needs to know where to save results locally. These results could be up 500Gb in size so make sure you've added an extra disk space.</p>
+    <p>After that Raptor-Cli will establish a connection to the Raptor-Server.</p>
+</div>
+
+<h2>Compiling Build-Monitor Build</h2>
+<div class="center">
+    <p>Raptor-Cli is just one of the many internal tools bundled together inside the <i>"Bep-Bundle"</i>. You can download the latest version at <a href="github" title="github">github</a> or from the copy hosted raptor server at <a href="raptor"> raptor server</a>. Bep-Bundle also contains other debuging useful tools that you can read more about <a href="asdfas">here.</a> </p>
+    <p>Before installing anything <u>make sure that you have enough disk space for the source code (30Gb) and enough storage space for the results (300Gb+).</u></p>
+    <p>Once you have got a local copy on the linux VM, you will need to install it.</p>
+    <pre>
+      <code>
+        $ echo "mount additional drive"
+        $ wget { ip }
+        $ unzip Bep-Bundle-master.zip
+        $ cd Bep-Bundle-master
+        $ chmod +x install.sh
+        $ sh install.sh
+      </code>
+    </pre>
+    <hr>
+    <h4><u>What is happening behind the scenes?</u></h4>
+    <p>Everything should be installed at this point. Bep-Bundle will first install all the tools. Then it will extract the Python Virtual environment for the raptor-cli. Next a tool called Clean-Machine will be run. Clean-Machine is just a program that does minimal adjustments to build machine. For example it will set up licence server environment variables, edit /etc/hosts to contain Siss, remove name Huawei name resolution from /etc/resolv etc..</p>
+    <p>Next the Bep-Bundle needs to know where to save results locally. These results could be up 500Gb in size so make sure you've added an extra disk space.</p>
+    <p>After that Raptor-Cli will establish a connection to the Raptor-Server.</p>
+</div>
+
+<h2>Compiling Completeness Build</h2>
+<div class="center">
+    <p>Raptor-Cli is just one of the many internal tools bundled together inside the <i>"Bep-Bundle"</i>. You can download the latest version at <a href="github" title="github">github</a> or from the copy hosted raptor server at <a href="raptor"> raptor server</a>. Bep-Bundle also contains other debuging useful tools that you can read more about <a href="asdfas">here.</a> </p>
+    <p>Before installing anything <u>make sure that you have enough disk space for the source code (30Gb) and enough storage space for the results (300Gb+).</u></p>
+    <p>Once you have got a local copy on the linux VM, you will need to install it.</p>
+    <pre>
+      <code>
+        $ echo "mount additional drive"
+        $ wget { ip }
+        $ unzip Bep-Bundle-master.zip
+        $ cd Bep-Bundle-master
+        $ chmod +x install.sh
+        $ sh install.sh
+      </code>
+    </pre>
+    <hr>
+    <h4><u>What is happening behind the scenes?</u></h4>
+    <p>Everything should be installed at this point. Bep-Bundle will first install all the tools. Then it will extract the Python Virtual environment for the raptor-cli. Next a tool called Clean-Machine will be run. Clean-Machine is just a program that does minimal adjustments to build machine. For example it will set up licence server environment variables, edit /etc/hosts to contain Siss, remove name Huawei name resolution from /etc/resolv etc..</p>
+    <p>Next the Bep-Bundle needs to know where to save results locally. These results could be up 500Gb in size so make sure you've added an extra disk space.</p>
+    <p>After that Raptor-Cli will establish a connection to the Raptor-Server.</p>
+</div>
+
+{% endblock %}

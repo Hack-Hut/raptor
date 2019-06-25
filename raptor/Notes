@@ -1,0 +1,116 @@
+ENDPOINTS
+	register/free/project:id:type
+	register/busy/project:id:type
+	register/compiling/project:id:type
+
+	upload/initial/project:id
+	upload/semmel/project:id
+
+	download/bep-bundle
+	download/build-monitor
+	download/semmel
+
+	buildmonitor/new-job/project:id:parent
+	buildmonitor/get-job/project:id:child
+
+
+PROCESS SINGLE LINUX
+
+* Add Disk
+
+* Download Bep-Bundle (Ansiable?)
+
+* Install Linux Version
+	* Install tools etc
+	* Install virtual environment
+	* Clean Machine
+	* Create result location
+----* Connect to raptor
+
+* Prepare Machine
+	* Follow the document up to
+	  The point where you build.
+
+* Snapshot machine
+
+* Raptor-cli -id 1:i build.sh
+----* Connect to Raptor
+		* Register VM as compiling
+	* Start Auditd
+		* Record execve syscalls
+	* Start Null-Catcher
+		* Find stuff sent to /dev/null
+	* Start Bep-Step
+		* Find Build Script order
+	* Perform Build
+	* Store Log, Auditd, null, step
+	* Start Auditme
+		* Parse Auditd
+		* Create Monitor_hash_list
+		* Create Binaries to proxy
+		* Create Plugin list
+		* Create Compiler Versions
+	* Move the results to storage
+	* Compress results
+	* Hash the archive
+----* Conect to Raptor
+		* Upload the results through
+		  the API
+		* Register VM as free
+
+* Revert Snapshot
+
+* Run compy delete script
+
+* Raptor-cli -id 1:c build.sh
+----* Connect to Raptor
+		* Register machine as compiling
+	* Run Build script
+----* Connect to Raptor
+		* Register machine as free
+		* Add a job to confirm if
+		 completeness matched
+		* Free machine
+
+* Revert Snapshot
+
+* Raptor-cli -id 1:B build.sh
+----* Connect to Raptor
+		* Register machine as compiling
+		* Download results from Raptor
+		* Download latest version of BM
+	* Install BM Client
+		* Install the config files
+		* Run Proxy installer
+		* Read proxy log for errors
+		* Run proxy manager
+----* Connect to Raptor
+		* Start a new build-monitor job for id:HCSEC-120:1
+		* Wait for response
+	* Run a compiler from the proxy list
+----* Connect to Raptor
+		* Ask if anything proxy worked
+	* Perform Build
+----* Connect to Raptor
+		* Register VM as free
+	* Confirm if Build was sucessful job
+		* TRUE
+			* Batch process celery job to compress results
+		* FALSE
+			* Delete results
+
+* Revert Snapshot
+
+* Raptor-cli -id 1:S build.sh
+----* Connect to Raptor
+		* Register machine as compiling
+		* Download latest version of semmel
+	* Install Semmel in result location
+	* Run semmel
+	* Connect to Raptor
+		* Register machine as busy
+	* Compress and Export Snapshot
+----* Connect to Raptor
+		* Upload Compressed Snapshot
+		* Register VM as free
+

@@ -18,6 +18,7 @@ from django.urls import include, path
 from project.views import (
     index_view, project_view, create_new_project_view, project_modify_view
 )
+from Documentation.views import single_linux_view
 
 app_name = 'project'
 
@@ -25,13 +26,13 @@ urlpatterns = [
     path("", index_view),
     path('Admin/', admin.site.urls),
     path('Documentation/', admin.site.urls),
-    path('Documentation/tools/Bep-Bundle', admin.site.urls),
-    path('Documentation/tools/Raptor-Cli', admin.site.urls),
-    path('Documentation/tools/Raptor-Cli/REST-api', admin.site.urls),
-    path('Documentation/tools/Bep-Step', admin.site.urls),
-    path('Documentation/tools/Null-Catcher', admin.site.urls),
-    path('Documentation/tools/Clean-Machine', admin.site.urls),
-    path('Documentation/tools/', admin.site.urls),
+    path('Documentation/Bep-Bundle', admin.site.urls),
+    path('Documentation/Raptor-Cli/Single_Linux', single_linux_view),
+    path('Documentation/Raptor-Cli/REST-api', admin.site.urls),
+    path('Documentation/Bep-Step', admin.site.urls),
+    path('Documentation/Null-Catcher', admin.site.urls),
+    path('Documentation/Clean-Machine', admin.site.urls),
+    path('Documentation/', admin.site.urls),
     path('Documentation/Setup/', admin.site.urls),
     path('Documentation/Celery/', admin.site.urls),
     path('Documentation/Login/', admin.site.urls),
